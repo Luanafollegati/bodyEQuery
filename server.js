@@ -72,71 +72,106 @@ app.post("/bruxos", (req, res) => {
     vivo: vivo,
   };
 
-bruxos.push(novoBruxo);
+  bruxos.push(novoBruxo);
 
-res.status(201).json({
-    sucess:true,
+  res.status(201).json({
+    sucess: true,
     message: "Novo bruxo adicionado a Hogwarts!",
     data: novoBruxo,
-})
+  })
 });
 
+//Listar varinhas
 app.get("/varinhas", (req, res) => {
-    const {material, nucleo} = req.query;
-    let resultadoVarinhas = varinhas;
+  const { material, nucleo } = req.query;
+  let resultadoVarinhas = varinhas;
 
-    if (material) {
-        resultadoVarinhas = resultadoVarinhas.filter (v => v.material.toLowerCase() === material.toLowerCase());  
-      };
+  if (material) {
+    resultadoVarinhas = resultadoVarinhas.filter(v => v.material.toLowerCase() === material.toLowerCase());
+  };
 
-      if (nucleo) {
-        resultadoVarinhas = resultadoVarinhas.filter (v => v.nucleo.toLowerCase() === nucleo.toLowerCase());
-    }
-      
-      res.status(200).json({
-        total: resultadoVarinhas.length,
-        data: resultadoVarinhas,
-      });
+  if (nucleo) {
+    resultadoVarinhas = resultadoVarinhas.filter(v => v.nucleo.toLowerCase() === nucleo.toLowerCase());
+  }
+
+  res.status(200).json({
+    total: resultadoVarinhas.length,
+    data: resultadoVarinhas,
+  });
+});
+
+//Listar poções
+app.get("/pocoes", (req, res) => {
+  const { nome, efeito } = req.query;
+  let resultadoPocoes = pocoes;
+
+  if (nome) {
+    resultadoPocoes = resultadoPocoes.filter(p => p.nome.toLowerCase() === nome.toLowerCase());
+  };
+
+  if (efeito) {
+    resultadoPocoes = resultadoPocoes.filter(p => p.efeito.toLowerCase() === efeito.toLowerCase());
+  }
+
+  res.status(200).json({
+    total: resultadoPocoes.length,
+    data: resultadoPocoes,
+  });
+});
+
+//Listar animais
+app.get("/animais", (req, res) => {
+  const { tipo, nome } = req.query;
+  let resultadoAnimais = animais;
+
+  if (tipo) {
+    resultadoAnimais = resultadoAnimais.filter(a => a.tipo.toLowerCase() === tipo.toLowerCase());
+  };
+
+  if (nome) {
+    resultadoAnimais = resultadoAnimais.filter(a => a.nome.toLowerCase() === nome.toLowerCase());
+  }
+
+  res.status(200).json({
+    total: resultadoAnimais.length,
+    data: resultadoAnimais,
+  });
+});
+
+//Adicionar varinha
+app.post("/varinhas", (req, res) => {
+  const { material, nucleo, comprimento } = req.body;
+  req.body;
+
+  //Validar se os campos obrigatórios foram preenchidos
+  if (!material || !nucleo || !comprimento) {
+    return res.status(400).json({
+      sucess: false,
+      mensage: "material, nucleo e comprimento são obrigatórios para uma varinha!",
     });
+  }
 
-    app.get("/pocoes", (req, res) => {
-        const {nome, efeito} = req.query;
-        let resultadoPocoes = pocoes;
-    
-        if (nome) {
-            resultadoPocoes = resultadoPocoes.filter (p => p.nome.toLowerCase() === nome.toLowerCase());  
-          };
-    
-          if (efeito) {
-            resultadoPocoes = resultadoPocoes.filter (p => p.efeito.toLowerCase() === efeito.toLowerCase());
-        }
-          
-          res.status(200).json({
-            total: resultadoPocoes.length,
-            data: resultadoPocoes,
-          });
-        });
+  //Criar varinha
+  const novaVarinha = {
+    id: varinhas.length + 1,
+    material,
+    nucleo,
+    comprimento,
+  };
 
-        app.get("/animais", (req, res) => {
-            const {tipo, nome} = req.query;
-            let resultadoAnimais = pocoes;
-        
-            if (tipo) {
-                resultadoAnimais = resultadoAnimais.filter (a => a.tipo.toLowerCase() === tipo.toLowerCase());  
-              };
-        
-              if (nome) {
-                resultadoAnimais = resultadoAnimais.filter (a => a.nome.toLowerCase() === nome.toLowerCase());
-            }
-              
-              res.status(200).json({
-                total: resultadoAnimais.length,
-                data: resultadoAnimais,
-              });
-            });
-    
+  varinhas.push(novaVarinha);
+
+  res.status(201).json({
+    sucess: true,
+    message: "Nova varinha adicionada!",
+    data: novaVarinha,
+  });
+});
+
+
+
 
 // Iniciar servidor escutando na porta definida
 app.listen(serverPort, () => {
   console.log(`🚀 Servidor rodando em http://localhost:${serverPort} 🚀`);
-  });
+});
